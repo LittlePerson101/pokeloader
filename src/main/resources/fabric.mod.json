@@ -20,7 +20,10 @@
 		],
 		"client": [
 			"littleperson101.pokeloader.client.PokeloaderClient"
-		]
+		],
+        "modmenu": [
+          "littleperson101.pokeloader.client.integration.PokeloaderModMenu"
+        ]
 	},
 	"mixins": [
 		"pokeloader.mixins.json",
