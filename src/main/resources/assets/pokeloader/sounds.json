@@ -1,0 +1,8 @@
+{
+  "pokeball_catch": {
+    "category": "master",
+    "sounds": [
+      "pokeloader:pokeball"
+    ]
+  }
+}
