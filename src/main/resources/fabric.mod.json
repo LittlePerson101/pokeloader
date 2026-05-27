@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "pokeloader",
+	"version": "${version}",
+	"name": "Pokeloader",
+	"description": "Displays the iconic Pokeball on game startup with some satisfying audio as well.",
+	"authors": [
+		"LittlePerson101"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/pokeloader/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"littleperson101.pokeloader.Pokeloader"
+		],
+		"client": [
+			"littleperson101.pokeloader.client.PokeloaderClient"
+		]
+	},
+	"mixins": [
+		"pokeloader.mixins.json",
+		{
+			"config": "pokeloader.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
