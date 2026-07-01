@@ -1,4 +1,4 @@
-package littleperson101.pokeloader.client;
+package io.github.littleperson101.pokeloader.client;
 
 import net.fabricmc.api.ClientModInitializer;
 

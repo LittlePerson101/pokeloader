@@ -1,6 +1,6 @@
-package littleperson101.pokeloader;
+package io.github.littleperson101.pokeloader;
 
-import littleperson101.pokeloader.config.PokeloaderConfig;
+import io.github.littleperson101.pokeloader.config.PokeloaderConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;

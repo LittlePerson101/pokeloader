@@ -1,4 +1,4 @@
-package littleperson101.pokeloader.config;
+package io.github.littleperson101.pokeloader.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,8 +15,15 @@ public class PokeloaderConfig {
     // ==========================================
     // CONFIGURATION OPTIONS
     // ==========================================
+
+    // Original 1.0.1 values
     public boolean enableCustomLoadingScreen = true;
     public boolean playCatchSound = true;
+
+    // Extended Config Options introduced in 2.0.0:
+    public int orbColor = 0xFFD166;
+    public int lingerTimeMs = 500;
+    public boolean invertColors = false;
 
     // ==========================================
     // BACKEND LOGIC

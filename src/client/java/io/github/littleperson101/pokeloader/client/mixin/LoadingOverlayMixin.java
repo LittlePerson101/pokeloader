@@ -1,6 +1,7 @@
-package littleperson101.pokeloader.client.mixin;
+package io.github.littleperson101.pokeloader.client.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.littleperson101.pokeloader.config.PokeloaderConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.LoadingOverlay;
@@ -18,7 +19,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LoadingOverlay.class)
 public class LoadingOverlayMixin {
 
-    @Shadow @Final private Minecraft minecraft;
+    @Shadow
+    @Final
+    private Minecraft minecraft;
 
     @Unique
     private static final long ANIMATION_DURATION_MS = 1000;
@@ -31,7 +34,7 @@ public class LoadingOverlayMixin {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void drawProceduralPokeball(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (!littleperson101.pokeloader.config.PokeloaderConfig.getInstance().enableCustomLoadingScreen) {
+        if (!PokeloaderConfig.getInstance().enableCustomLoadingScreen) {
             return;
         }
 
@@ -39,57 +42,67 @@ public class LoadingOverlayMixin {
             startTime = System.currentTimeMillis();
         }
 
+        // 1. Calculate timing
         long elapsed = System.currentTimeMillis() - startTime;
+        long totalWaitTime = ANIMATION_DURATION_MS + PokeloaderConfig.getInstance().lingerTimeMs;
+
+        // progress stays at 1.0 during the linger phase
         double progress = Math.min(1.0, (double) elapsed / ANIMATION_DURATION_MS);
 
+        // 2. Logic: Handle fade start after animation + linger
         boolean isGameLoaded = this.minecraft.screen != null;
-
-        if (isGameLoaded && progress >= 1.0 && fadeStartTime == -1) {
+        if (isGameLoaded && elapsed >= totalWaitTime && fadeStartTime == -1) {
             fadeStartTime = System.currentTimeMillis();
         }
 
+        // 3. Calculate alpha for fading
         float alpha = 1.0f;
         if (fadeStartTime != -1) {
             long fadeElapsed = System.currentTimeMillis() - fadeStartTime;
             alpha = 1.0f - Math.min(1.0f, (float) fadeElapsed / 2000.0f);
-
             if (alpha <= 0.0f) {
                 return;
             }
         }
-        if (littleperson101.pokeloader.config.PokeloaderConfig.getInstance().playCatchSound) {
-            if (progress >= 0.9 && !soundPlayed) {
-                try {
-                    ResourceLocation soundRegistryLocation = ResourceLocation.fromNamespaceAndPath("pokeloader", "pokeball_catch");
-                    SoundEvent pokeballSound = SoundEvent.createVariableRangeEvent(soundRegistryLocation);
-                    this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(pokeballSound, 1.0F));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                soundPlayed = true;
+
+        // 4. Handle Sound
+        if (PokeloaderConfig.getInstance().playCatchSound && progress >= 0.9 && !soundPlayed) {
+            try {
+                ResourceLocation soundRegistryLocation = ResourceLocation.fromNamespaceAndPath("pokeloader", "pokeball_catch");
+                SoundEvent pokeballSound = SoundEvent.createVariableRangeEvent(soundRegistryLocation);
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(pokeballSound, 1.0F));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            soundPlayed = true;
         }
+
+        // 5. Drawing
         int width = guiGraphics.guiWidth();
         int height = guiGraphics.guiHeight();
         int centerX = width / 2;
         int centerY = height / 2;
         int radius = 50;
         int alphaBits = ((int) (alpha * 255)) << 24;
-        int bgColor = alphaBits | 0x121212;
-        guiGraphics.fill(0, 0, width, height, bgColor);
+
+        // Background and base shapes
+        guiGraphics.fill(0, 0, width, height, alphaBits | 0x121212);
+
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        int whiteColor = alphaBits | 0xFFFFFF;
-        guiGraphics.fill(centerX - radius, centerY, centerX + radius, centerY + radius, whiteColor);
-        int redColor = alphaBits | 0xE63946;
+
+        guiGraphics.fill(centerX - radius, centerY, centerX + radius, centerY + radius, alphaBits | 0xFFFFFF); // White
+
         int upperOffset = (int) ((1.0 - progress) * 40);
-        guiGraphics.fill(centerX - radius, centerY - radius - upperOffset, centerX + radius, centerY - upperOffset, redColor);
-        int darkTrim = alphaBits | 0x2B2B2B;
-        guiGraphics.fill(centerX - radius - 2, centerY - 3, centerX + radius + 2, centerY + 3, darkTrim);
-        guiGraphics.fill(centerX - 14, centerY - 14, centerX + 14, centerY + 14, darkTrim);
-        int coreColorHex = (progress < 1.0) ? 0x888888 : 0xFFD166;
-        int finalCoreColor = alphaBits | coreColorHex;
-        guiGraphics.fill(centerX - 8, centerY - 8, centerX + 8, centerY + 8, finalCoreColor);
+        guiGraphics.fill(centerX - radius, centerY - radius - upperOffset, centerX + radius, centerY - upperOffset, alphaBits | 0xE63946); // Red
+
+        guiGraphics.fill(centerX - radius - 2, centerY - 3, centerX + radius + 2, centerY + 3, alphaBits | 0x2B2B2B); // Trim
+        guiGraphics.fill(centerX - 14, centerY - 14, centerX + 14, centerY + 14, alphaBits | 0x2B2B2B); // Trim
+
+        // Core (uses Config orbColor)
+        int coreColorHex = (progress < 1.0) ? 0x888888 : PokeloaderConfig.getInstance().orbColor;
+        guiGraphics.fill(centerX - 8, centerY - 8, centerX + 8, centerY + 8, alphaBits | coreColorHex);
+
         RenderSystem.disableBlend();
         ci.cancel();
     }

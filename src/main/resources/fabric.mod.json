@@ -9,20 +9,21 @@
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/project/pokeloader",
-		"sources": "https://github.com/LittlePerson101/pokeloader"
+		"sources": "https://github.com/LittlePerson101/pokeloader",
+        "issues": "https://github.com/LittlePerson101/pokeloader/issues"
 	},
+  "environment": "client",
 	"license": "GNU-AGPL-3.0-only",
 	"icon": "assets/pokeloader/icon.png",
-	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"littleperson101.pokeloader.Pokeloader"
+          "io.github.littleperson101.pokeloader.Pokeloader"
 		],
 		"client": [
-			"littleperson101.pokeloader.client.PokeloaderClient"
+          "io.github.littleperson101.pokeloader.client.PokeloaderClient"
 		],
         "modmenu": [
-          "littleperson101.pokeloader.client.integration.PokeloaderModMenu"
+          "io.github.littleperson101.pokeloader.client.integration.PokeloaderModMenu"
         ]
 	},
 	"mixins": [
@@ -37,5 +38,11 @@
 		"minecraft": "~1.21.1",
 		"java": ">=21",
 		"fabric-api": "*"
-	}
+    },
+    "custom": {
+      "modmenu": {
+        "update_checker": true
+      }
+    }
 }
+

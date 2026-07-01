@@ -1,4 +1,4 @@
-package littleperson101.pokeloader.client.mixin;
+package io.github.littleperson101.pokeloader.client.mixin;
 
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
