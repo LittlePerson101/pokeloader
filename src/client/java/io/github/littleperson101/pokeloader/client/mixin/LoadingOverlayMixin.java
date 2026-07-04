@@ -78,6 +78,8 @@ public class LoadingOverlayMixin {
         }
 
         // 5. Drawing
+// 5. Drawing (updated with inversion logic)
+// 5. Drawing
         int width = guiGraphics.guiWidth();
         int height = guiGraphics.guiHeight();
         int centerX = width / 2;
@@ -85,23 +87,33 @@ public class LoadingOverlayMixin {
         int radius = 50;
         int alphaBits = ((int) (alpha * 255)) << 24;
 
-        // Background and base shapes
-        guiGraphics.fill(0, 0, width, height, alphaBits | 0x121212);
+        // Config check
+        boolean invert = PokeloaderConfig.getInstance().invertColors;
+
+        // Helper to handle color inversion
+        // This inverts the RGB part (0x00FFFFFF) and leaves the alpha untouched
+        java.util.function.IntUnaryOperator applyInvert = c -> invert ? (~c & 0x00FFFFFF) : (c & 0x00FFFFFF);
+
+        // Background
+        guiGraphics.fill(0, 0, width, height, alphaBits | applyInvert.applyAsInt(0x121212));
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        guiGraphics.fill(centerX - radius, centerY, centerX + radius, centerY + radius, alphaBits | 0xFFFFFF); // White
+        // White part (becomes Black if inverted)
+        guiGraphics.fill(centerX - radius, centerY, centerX + radius, centerY + radius, alphaBits | applyInvert.applyAsInt(0xFFFFFF));
 
+        // Red part (becomes Cyan if inverted)
         int upperOffset = (int) ((1.0 - progress) * 40);
-        guiGraphics.fill(centerX - radius, centerY - radius - upperOffset, centerX + radius, centerY - upperOffset, alphaBits | 0xE63946); // Red
+        guiGraphics.fill(centerX - radius, centerY - radius - upperOffset, centerX + radius, centerY - upperOffset, alphaBits | applyInvert.applyAsInt(0xE63946));
 
-        guiGraphics.fill(centerX - radius - 2, centerY - 3, centerX + radius + 2, centerY + 3, alphaBits | 0x2B2B2B); // Trim
-        guiGraphics.fill(centerX - 14, centerY - 14, centerX + 14, centerY + 14, alphaBits | 0x2B2B2B); // Trim
+        // Trim part
+        guiGraphics.fill(centerX - radius - 2, centerY - 3, centerX + radius + 2, centerY + 3, alphaBits | applyInvert.applyAsInt(0x2B2B2B));
+        guiGraphics.fill(centerX - 14, centerY - 14, centerX + 14, centerY + 14, alphaBits | applyInvert.applyAsInt(0x2B2B2B));
 
-        // Core (uses Config orbColor)
-        int coreColorHex = (progress < 1.0) ? 0x888888 : PokeloaderConfig.getInstance().orbColor;
-        guiGraphics.fill(centerX - 8, centerY - 8, centerX + 8, centerY + 8, alphaBits | coreColorHex);
+        // Core
+        int coreColor = (progress < 1.0) ? 0x888888 : PokeloaderConfig.getInstance().orbColor;
+        guiGraphics.fill(centerX - 8, centerY - 8, centerX + 8, centerY + 8, alphaBits | applyInvert.applyAsInt(coreColor));
 
         RenderSystem.disableBlend();
         ci.cancel();

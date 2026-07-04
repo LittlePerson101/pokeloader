@@ -49,6 +49,16 @@ public class PokeloaderModMenu implements ModMenuApi {
                                     .binding(new Color(0xFFD166), () -> new Color(config.orbColor), val -> config.orbColor = val.getRGB())
                                     .controller(ColorControllerBuilder::create)
                                     .build())
+                            .option(Option.<Boolean>createBuilder()
+                                    .name(Component.literal("Invert Pokéball Colors"))
+                                    .description(OptionDescription.of(Component.literal("Inverts the colors of all Pokéball elements.")))
+                                    .binding(
+                                            false,
+                                            () -> config.invertColors,
+                                            val -> config.invertColors = val
+                                    )
+                                    .controller(TickBoxControllerBuilder::create)
+                                    .build())
                             .build())
                     .save(PokeloaderConfig::save)
                     .build()

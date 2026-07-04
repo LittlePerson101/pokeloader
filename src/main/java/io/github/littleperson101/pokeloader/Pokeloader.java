@@ -21,5 +21,8 @@ public class Pokeloader implements ModInitializer {
         LOGGER.info("[Pokeloader]: Current Configuration Loaded:");
         LOGGER.info("  -> Custom Loading Screen Enabled: {}", config.enableCustomLoadingScreen);
         LOGGER.info("  -> Catch Sound Effects Enabled: {}", config.playCatchSound);
+        LOGGER.info("  -> Pokeball Orb Color: {}", config.orbColor);
+        LOGGER.info("  -> Animation Linger Time (ms): {}", config.lingerTimeMs);
+        LOGGER.info("  -> Invert Animation: {}", config.invertColors);
     }
 }
