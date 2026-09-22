@@ -22,7 +22,7 @@ public class PokeloaderModMenu implements ModMenuApi {
             PokeloaderConfig config = PokeloaderConfig.getInstance();
 
             return YetAnotherConfigLib.createBuilder()
-                    .title(Component.literal("PokeLoader Settings"))
+                    .title(Component.literal("Pokeloader Settings"))
                     .category(ConfigCategory.createBuilder()
                             .name(Component.literal("General"))
                             .option(Option.<Boolean>createBuilder()
