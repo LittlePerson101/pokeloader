@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+ 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -36,17 +36,16 @@ loom {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     // Mod Menu
-    modImplementation "com.terraformersmc:modmenu:11.0.4"
+    implementation "maven.modrinth:mOgUt4GM:lcxkZSq6"
 
-    // Yet Another Config Lib (YACL) - Note the matching quotes at the front and back!
-    modImplementation "dev.isxander:yet-another-config-lib:3.6.1+1.21-fabric"
+    // Yet Another Config Lib (YACL)
+    implementation "maven.modrinth:1eAoo2KR:s9SjoFu1"
 }
 
 processResources {
@@ -79,6 +78,7 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_$projectName"}
 	}
+
 }
 
 // configure the maven publication

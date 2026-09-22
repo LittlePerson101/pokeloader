@@ -3,8 +3,7 @@
   "package": "io.github.littleperson101.pokeloader.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ExampleClientMixin",
-    "GuiGraphicsMixin"
+    "ExampleClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -13,7 +12,6 @@
     "requireAnnotations": true
   },
   "mixins": [
-    "ExampleClientMixin",
     "LoadingOverlayMixin"
   ]
 }

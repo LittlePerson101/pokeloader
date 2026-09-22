@@ -50,7 +50,7 @@ public class PokeloaderModMenu implements ModMenuApi {
                                     .controller(ColorControllerBuilder::create)
                                     .build())
                             .option(Option.<Boolean>createBuilder()
-                                    .name(Component.literal("Invert Pokéball Colors"))
+                                    .name(Component.literal("Invert Pokéball ColorsA"))
                                     .description(OptionDescription.of(Component.literal("Inverts the colors of all Pokéball elements.")))
                                     .binding(
                                             false,
