@@ -1,22 +1,26 @@
 package io.github.littleperson101.pokeloader;
 
+import io.github.littleperson101.pokeloader.client.PokeloaderConfigScreen;
 import io.github.littleperson101.pokeloader.config.PokeloaderConfig;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Pokeloader implements ModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("pokeloader");
+@Mod(Pokeloader.MOD_ID)
+public class Pokeloader {
+    public static final String MOD_ID = "pokeloader";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    @Override
-    public void onInitialize() {
+    public Pokeloader(IEventBus modEventBus, ModContainer modContainer) {
         PokeloaderConfig.load();
         PokeloaderConfig config = PokeloaderConfig.getInstance();
-        String version = FabricLoader.getInstance()
-                .getModContainer("pokeloader")
-                .map(container -> container.getMetadata().getVersion().getFriendlyString())
-                .orElse("UNKNOWN");
+
+        String version = modContainer.getModInfo().getVersion().toString();
+
         LOGGER.info("[Pokeloader]: Pokeloader {} has been initialized!", version);
         LOGGER.info("[Pokeloader]: Current Configuration Loaded:");
         LOGGER.info("  -> Custom Loading Screen Enabled: {}", config.enableCustomLoadingScreen);
@@ -24,5 +28,12 @@ public class Pokeloader implements ModInitializer {
         LOGGER.info("  -> Pokeball Orb Color: {}", config.orbColor);
         LOGGER.info("  -> Animation Linger Time (ms): {}", config.lingerTimeMs);
         LOGGER.info("  -> Invert Animation: {}", config.invertColors);
+
+        if (FMLLoader.getDist().isClient()) {
+            modContainer.registerExtensionPoint(
+                    IConfigScreenFactory.class,
+                    (container, parent) -> PokeloaderConfigScreen.create(parent)
+            );
+        }
     }
 }
