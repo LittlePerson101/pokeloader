@@ -1,14 +1,14 @@
 {
-	"required": true,
-	"package": "io.github.littleperson101.pokeloader.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-      "ExampleMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
-	}
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.littleperson101.pokeloader.mixin",
+  "refmap": "pokeloader.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "GuiGraphicsMixin",
+    "LoadingOverlayMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

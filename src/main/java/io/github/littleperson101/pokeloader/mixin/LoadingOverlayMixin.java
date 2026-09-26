@@ -1,4 +1,4 @@
-package io.github.littleperson101.pokeloader.client.mixin;
+package io.github.littleperson101.pokeloader.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.littleperson101.pokeloader.config.PokeloaderConfig;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LoadingOverlay.class)
+@Mixin(value = LoadingOverlay.class, priority = 1001)
 public class LoadingOverlayMixin {
 
     @Shadow
@@ -42,20 +42,15 @@ public class LoadingOverlayMixin {
             startTime = System.currentTimeMillis();
         }
 
-        // 1. Calculate timing
         long elapsed = System.currentTimeMillis() - startTime;
         long totalWaitTime = ANIMATION_DURATION_MS + PokeloaderConfig.getInstance().lingerTimeMs;
-
-        // progress stays at 1.0 during the linger phase
         double progress = Math.min(1.0, (double) elapsed / ANIMATION_DURATION_MS);
 
-        // 2. Logic: Handle fade start after animation + linger
         boolean isGameLoaded = this.minecraft.screen != null;
         if (isGameLoaded && elapsed >= totalWaitTime && fadeStartTime == -1) {
             fadeStartTime = System.currentTimeMillis();
         }
 
-        // 3. Calculate alpha for fading
         float alpha = 1.0f;
         if (fadeStartTime != -1) {
             long fadeElapsed = System.currentTimeMillis() - fadeStartTime;
@@ -65,7 +60,6 @@ public class LoadingOverlayMixin {
             }
         }
 
-        // 4. Handle Sound
         if (PokeloaderConfig.getInstance().playCatchSound && progress >= 0.9 && !soundPlayed) {
             try {
                 ResourceLocation soundRegistryLocation = new ResourceLocation("pokeloader", "pokeball_catch");
@@ -77,9 +71,6 @@ public class LoadingOverlayMixin {
             soundPlayed = true;
         }
 
-        // 5. Drawing
-// 5. Drawing (updated with inversion logic)
-// 5. Drawing
         int width = guiGraphics.guiWidth();
         int height = guiGraphics.guiHeight();
         int centerX = width / 2;
@@ -87,31 +78,27 @@ public class LoadingOverlayMixin {
         int radius = 50;
         int alphaBits = ((int) (alpha * 255)) << 24;
 
-        // Config check
         boolean invert = PokeloaderConfig.getInstance().invertColors;
-
-        // Helper to handle color inversion
-        // This inverts the RGB part (0x00FFFFFF) and leaves the alpha untouched
         java.util.function.IntUnaryOperator applyInvert = c -> invert ? (~c & 0x00FFFFFF) : (c & 0x00FFFFFF);
 
-        // Background
+        // Clear background
         guiGraphics.fill(0, 0, width, height, alphaBits | applyInvert.applyAsInt(0x121212));
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        // White part (becomes Black if inverted)
+        // White bottom half
         guiGraphics.fill(centerX - radius, centerY, centerX + radius, centerY + radius, alphaBits | applyInvert.applyAsInt(0xFFFFFF));
 
-        // Red part (becomes Cyan if inverted)
+        // Red top half
         int upperOffset = (int) ((1.0 - progress) * 40);
         guiGraphics.fill(centerX - radius, centerY - radius - upperOffset, centerX + radius, centerY - upperOffset, alphaBits | applyInvert.applyAsInt(0xE63946));
 
-        // Trim part
+        // Center band / outer ring
         guiGraphics.fill(centerX - radius - 2, centerY - 3, centerX + radius + 2, centerY + 3, alphaBits | applyInvert.applyAsInt(0x2B2B2B));
         guiGraphics.fill(centerX - 14, centerY - 14, centerX + 14, centerY + 14, alphaBits | applyInvert.applyAsInt(0x2B2B2B));
 
-        // Core
+        // Center orb
         int coreColor = (progress < 1.0) ? 0x888888 : PokeloaderConfig.getInstance().orbColor;
         guiGraphics.fill(centerX - 8, centerY - 8, centerX + 8, centerY + 8, alphaBits | applyInvert.applyAsInt(coreColor));
 

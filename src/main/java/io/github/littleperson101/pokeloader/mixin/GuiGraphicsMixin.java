@@ -1,4 +1,4 @@
-package io.github.littleperson101.pokeloader.client.mixin;
+package io.github.littleperson101.pokeloader.mixin;
 
 import io.github.littleperson101.pokeloader.config.PokeloaderConfig;
 import net.minecraft.client.gui.GuiGraphics;
