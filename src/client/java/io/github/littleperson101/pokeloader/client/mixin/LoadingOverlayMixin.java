@@ -68,7 +68,7 @@ public class LoadingOverlayMixin {
         // 4. Handle Sound
         if (PokeloaderConfig.getInstance().playCatchSound && progress >= 0.9 && !soundPlayed) {
             try {
-                ResourceLocation soundRegistryLocation = ResourceLocation.fromNamespaceAndPath("pokeloader", "pokeball_catch");
+                ResourceLocation soundRegistryLocation = new ResourceLocation("pokeloader", "pokeball_catch");
                 SoundEvent pokeballSound = SoundEvent.createVariableRangeEvent(soundRegistryLocation);
                 this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(pokeballSound, 1.0F));
             } catch (Exception e) {
