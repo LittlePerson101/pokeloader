@@ -6,6 +6,8 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "GuiGraphicsMixin",
+    "LoadingOverlayAccessor",
+    "ForgeLoadingOverlayMixin",
     "LoadingOverlayMixin"
   ],
   "injectors": {

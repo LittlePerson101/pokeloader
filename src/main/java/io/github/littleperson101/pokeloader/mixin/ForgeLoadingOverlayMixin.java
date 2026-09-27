@@ -4,30 +4,29 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.littleperson101.pokeloader.config.PokeloaderConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.LoadingOverlay;
+import net.minecraftforge.client.loading.ForgeLoadingOverlay;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.server.packs.resources.ReloadInstance;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LoadingOverlay.class)
-public class LoadingOverlayMixin {
+@Mixin(ForgeLoadingOverlay.class)
+public class ForgeLoadingOverlayMixin {
 
-    @Shadow @Final private Minecraft minecraft;
-    @Shadow @Final private ReloadInstance reload;
-
-    @Unique private static final long ANIMATION_DURATION_MS = 1000;
-    @Unique private long startTime = -1;
-    @Unique private long fadeStartTime = -1;
-    @Unique private boolean soundPlayed = false;
+    @Unique
+    private static final long ANIMATION_DURATION_MS = 1000;
+    @Unique
+    private long startTime = -1;
+    @Unique
+    private long fadeStartTime = -1;
+    @Unique
+    private boolean soundPlayed = false;
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void hijackVanillaRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void hijackForgeRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (!PokeloaderConfig.getInstance().enableCustomLoadingScreen) {
             return;
         }
@@ -36,10 +35,13 @@ public class LoadingOverlayMixin {
             startTime = System.currentTimeMillis();
         }
 
+        Minecraft minecraft = Minecraft.getInstance();
+        // Retrieve the private reload instance from the vanilla superclass
+        ReloadInstance reload = ((LoadingOverlayAccessor) this).getReload();
+
         long elapsed = System.currentTimeMillis() - startTime;
 
-        // Hold the animation at 90% until resources finish stitching
-        if (elapsed >= 900 && !this.reload.isDone()) {
+        if (elapsed >= 900 && !reload.isDone()) {
             startTime = System.currentTimeMillis() - 900;
             elapsed = 900;
         }
@@ -47,7 +49,7 @@ public class LoadingOverlayMixin {
         long totalWaitTime = ANIMATION_DURATION_MS + PokeloaderConfig.getInstance().lingerTimeMs;
         double progress = Math.min(1.0, (double) elapsed / ANIMATION_DURATION_MS);
 
-        if (this.reload.isDone() && elapsed >= totalWaitTime && fadeStartTime == -1) {
+        if (reload.isDone() && elapsed >= totalWaitTime && fadeStartTime == -1) {
             fadeStartTime = System.currentTimeMillis();
         }
 
@@ -60,10 +62,10 @@ public class LoadingOverlayMixin {
             }
         }
 
-        if (PokeloaderConfig.getInstance().playCatchSound && progress >= 0.9 && this.reload.isDone() && !soundPlayed) {
+        if (PokeloaderConfig.getInstance().playCatchSound && progress >= 0.9 && reload.isDone() && !soundPlayed) {
             try {
                 net.minecraft.sounds.SoundEvent pokeballSound = io.github.littleperson101.pokeloader.Pokeloader.POKEBALL_CATCH.get();
-                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(pokeballSound, 1.0F));
+                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(pokeballSound, 1.0F));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -97,6 +99,8 @@ public class LoadingOverlayMixin {
         guiGraphics.fill(centerX - 8, centerY - 8, centerX + 8, centerY + 8, alphaBits | applyInvert.applyAsInt(coreColor));
 
         RenderSystem.disableBlend();
+
+        // Cancel the remainder of the method so Forge's anvil and text are never drawn
         ci.cancel();
     }
 }

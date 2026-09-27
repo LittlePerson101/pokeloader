@@ -60,7 +60,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // YACL
-    implementation fg.deobf("dev.isxander:yet-another-config-lib:3.6.1+1.20.1-forge")
+    implementation fg.deobf("dev.isxander:yet-another-config-lib:3.6.6+1.20.1-forge")
 
     // YACL requires KotlinForForge on forge for some reason?!
     implementation fg.deobf("thedarkcolour:kotlinforforge:4.11.0")
