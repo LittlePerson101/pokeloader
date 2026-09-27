@@ -11,8 +11,11 @@ Builds for 1.19.3 and older are considered legacy and will recieve limited suppo
 
 ### NeoForge
 Similar to Fabric, NeoForge requires that you have [YetAnotherConfigLib (YACL)](https://modrinth.com/mod/yacl) installed to reach the config menu. 
-
 At the moment I only offer Neo builds for 1.21.1, however, I am just getting around to porting the mod from Fabric, so I can't guarantee support for much right now.
+
+### Forge
+For Forge you will need [YetAnotherConfigLib (YACL)](https://modrinth.com/mod/yacl) as well as it's Forge dependency [Kotlin for Forge](https://modrinth.com/mod/kotlin-for-forge)
+
 ### Support, Bugs, and Issues
 If you are having issues with the mod or have encountered a bug please report it on my GitHub repository so I can most effectively patch it.
 ### Noteworthy Disclaimer
