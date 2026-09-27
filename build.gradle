@@ -4,7 +4,6 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.jetbrains.kotlin.jvm' version '1.8.21'
-    // 1. ADD THE MIXIN PLUGIN
     id 'org.spongepowered.mixin' version '0.7.38'
 }
 
@@ -23,6 +22,14 @@ repositories {
     maven {
         url 'https://maven.shedaniel.me/'
     }
+    maven {
+        name = "XanderMaven"
+        url = "https://maven.isxander.dev/releases"
+    }
+    maven {
+        name = "KotlinForForge"
+        url 'https://thedarkcolour.github.io/KotlinForForge/'
+    }
 }
 
 minecraft {
@@ -37,12 +44,9 @@ minecraft {
         }
         client {
             property 'forge.enabledGameTestNamespaces', mod_id
-            // 3. TELL THE DEV ENVIRONMENT TO LOAD THE MIXIN
-            args '-mixin.config=pokeloader.mixins.json'
         }
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui', '-mixin.config=pokeloader.mixins.json'
         }
     }
 }
@@ -51,10 +55,16 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:11.1.118")
 
     // 4. ADD THE MIXIN ANNOTATION PROCESSOR
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    // YACL
+    implementation fg.deobf("dev.isxander:yet-another-config-lib:3.6.1+1.20.1-forge")
+
+    // YACL requires KotlinForForge on forge for some reason?!
+    implementation fg.deobf("thedarkcolour:kotlinforforge:4.11.0")
+
 }
 
 

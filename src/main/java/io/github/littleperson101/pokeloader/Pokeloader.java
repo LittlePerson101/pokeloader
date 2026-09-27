@@ -2,6 +2,7 @@ package io.github.littleperson101.pokeloader;
 
 import io.github.littleperson101.pokeloader.config.PokeloaderConfig;
 import io.github.littleperson101.pokeloader.integration.PokeloaderConfigScreen;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraft.sounds.SoundEvents;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,9 @@ public class Pokeloader {
     public static final String MODID = "pokeloader";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
+
+    public static final RegistryObject<SoundEvent> POKEBALL_CATCH = SOUND_EVENTS.register("pokeball_catch",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "pokeball_catch")));
 
     public Pokeloader() {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
