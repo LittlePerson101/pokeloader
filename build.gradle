@@ -51,8 +51,6 @@ minecraft {
     }
 }
 
-// ... (keep repositories as they were) ...
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -60,10 +58,10 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // YACL
-    implementation fg.deobf("dev.isxander:yet-another-config-lib:3.6.6+1.20.1-forge")
+    implementation fg.deobf("dev.isxander:yet-another-config-lib:${project.yacl_version}")
 
     // YACL requires KotlinForForge on forge for some reason?!
-    implementation fg.deobf("thedarkcolour:kotlinforforge:4.11.0")
+    implementation fg.deobf("thedarkcolour:kotlinforforge:${project.kotlin_version}")
 
 }
 
