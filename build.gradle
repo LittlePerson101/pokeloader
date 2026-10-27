@@ -2,7 +2,7 @@ plugins {
 	id 'java-library'
 	id 'maven-publish'
     id 'idea'
-    id 'net.neoforged.moddev' version '2.0.147'
+    id 'net.neoforged.moddev' version '2.0.148'
 }
 
 version = mod_version
@@ -61,7 +61,7 @@ sourceSets.main.resources {srcDir 'src/generated/resources'}
 
 dependencies {
     // YACL Neo
-    implementation "dev.isxander:yet-another-config-lib:3.8.1+1.21.1-neoforge"
+    implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
 }
 
 var generateModMetadata = tasks.register("generatedModMetadata", ProcessResources) {
