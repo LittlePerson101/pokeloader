@@ -42,10 +42,10 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     // Mod Menu
-    implementation "maven.modrinth:mOgUt4GM:9PxiZuDD"
+    implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // Yet Another Config Lib (YACL) - Note the matching quotes at the front and back!
-    implementation "maven.modrinth:1eAoo2KR:IODousKT"
+    implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
 }
 
 processResources {
@@ -58,7 +58,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
