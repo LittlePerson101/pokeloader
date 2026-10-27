@@ -43,10 +43,10 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     // Mod Menu
-    modImplementation "com.terraformersmc:modmenu:11.0.4"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // Yet Another Config Lib (YACL) - Note the matching quotes at the front and back!
-    modImplementation "dev.isxander:yet-another-config-lib:3.6.1+1.21-fabric"
+    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
 }
 
 processResources {
